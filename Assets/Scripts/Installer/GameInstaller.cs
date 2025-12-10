@@ -12,17 +12,23 @@ public class GameInstaller : MonoBehaviour
         commandInstaller = new CommandInstaller();
         selectInstaller = new SelectInstaller();
         inputController = new InputController();
-        unitSpawner = new UnitSpawner();
+        unitSpawner = GetComponent<UnitSpawner>();
+
+        if(commandInstaller == null || selectInstaller == null || inputController == null ||  unitSpawner == null)
+        {
+            Debug.Log("Something is null -> GameInstaller::Awake");
+            return;
+        }
 
         inputController.Initialize();
         unitSpawner.Initiallize(inputController.inputReader);
         selectInstaller.Initialize(inputController.inputReader);
         commandInstaller.Initialize(inputController.inputReader,selectInstaller.selectManager);
-        selectInstaller.Initialize(inputController.inputReader);
     }
         
     private void OnDestroy()
     {
         commandInstaller.Release();
+        selectInstaller.Release();
     }
 }

@@ -7,6 +7,13 @@ public class InputController
     public void Initialize()
     {
         inputReader = new CombatInputReader();
+
+        if (inputReader == null)
+        {
+            Debug.Log("inputReader is null -> InputController::Initialize");
+            return;
+        }
+
         inputReader.Initialize();
     }
 }

@@ -11,8 +11,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Player
+  - Enemy
   - 
   - 
   - 
@@ -43,6 +43,9 @@ TagManager:
     locked: 0
   - name: Floor
     uniqueID: 1361997565
+    locked: 0
+  - name: Effect
+    uniqueID: 984969781
     locked: 0
   - name: Outline
     uniqueID: 366891767

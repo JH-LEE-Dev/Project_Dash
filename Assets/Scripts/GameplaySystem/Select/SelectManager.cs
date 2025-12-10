@@ -9,11 +9,25 @@ public class SelectManager
     public void Initialize(InputReader inputReader)
     {
         this.inputReader = inputReader;
-        inputReader.LeftClickReleased += HandleLeftClickReleased;
+
+        if (inputReader == null)
+        {
+            Debug.Log("inputReader is null -> SelectManager::Initialize");
+            return;
+        }
+
+        inputReader.LeftClickReleasedEvent += HandleLeftClickReleased;
+    }
+
+    public void Release()
+    {
+        inputReader.LeftClickReleasedEvent -= HandleLeftClickReleased;
     }
 
     public void HandleLeftClick(Vector2 screenPos)
     {
+        selectedObject = null;
+
         Vector3 sp = screenPos;
         Vector2 worldPos = Camera.main.ScreenToWorldPoint(sp);
 
@@ -25,8 +39,6 @@ public class SelectManager
             {
                 selectedObject.HideOutLine();
             }
-
-            selectedObject = null;
 
             return;
         }
@@ -44,17 +56,18 @@ public class SelectManager
             {
                 selectedObject.HideOutLine();
             }
-
-            selectedObject = null;
         }
     }
 
     private void HandleLeftClickReleased()
     {
-        if (selectedObject != null)
+        if (selectedObject == null)
         {
-            selectedObject.SetSelected(false);
+            Debug.Log("selectedObject is null -> SelectManager::HandleLeftCilckReleased");
+            return;
         }
+
+        selectedObject.SetSelected(false);
     }
 
     public Entity GetSelectedObject()

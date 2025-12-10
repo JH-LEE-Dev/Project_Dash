@@ -19,14 +19,20 @@ public class CommandInstaller
         commandDispatcher = new CommandDispatcher();
         commandFactory = new CommandFactory();
 
+        if(commandController == null || commandDispatcher == null || commandFactory == null)
+        {
+            Debug.Log("Something is null -> CommandInstaller::Initialize");
+            return;
+        }
+
         inputReader.LeftClickEvent += commandController.HandleLeftClick;
-        inputReader.LeftClickReleased += commandController.HandleLeftClickReleased;
+        inputReader.LeftClickReleasedEvent += commandController.HandleLeftClickReleased;
         commandController.Initialize(commandFactory, commandDispatcher, selectManager);
     }
 
     public void Release()
     {
         inputReader.LeftClickEvent -= commandController.HandleLeftClick;
-        inputReader.LeftClickReleased -= commandController.HandleLeftClickReleased;
+        inputReader.LeftClickReleasedEvent -= commandController.HandleLeftClickReleased;
     }
 }

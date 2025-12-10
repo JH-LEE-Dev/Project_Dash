@@ -14,6 +14,11 @@ public class EntityComponent : MonoBehaviour
 
     }
 
+    protected virtual void OnDestroy()
+    {
+
+    }
+
     protected virtual void Update()
     {
 

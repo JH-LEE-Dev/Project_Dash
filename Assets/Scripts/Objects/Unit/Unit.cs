@@ -9,6 +9,8 @@ public class Unit : Entity
     private UnitContext ctx;
     private StateMachine fsm;
     private PMoveComponent moveComponent;
+    private PEffectComponent effectComponent;
+    private PCombatComponent combatComponent;
 
     //Arrow 임시 코드
     private float growSpeed = 1f;   // 1초당 얼마나 길어지는가
@@ -21,27 +23,47 @@ public class Unit : Entity
 
     private bool isHolding = false;
 
-    private float targetSpeed = 3f;
+    private float targetSpeed = 6f;
     private float jumpLength = 1f;
 
     protected override void Awake()
     {
+        base.Awake();
+
         ctx = new UnitContext();
         fsm = new StateMachine();
         moveComponent = GetComponent<PMoveComponent>();
+        effectComponent = GetComponent<PEffectComponent>();
+        combatComponent = GetComponent<PCombatComponent>();
         moveComponent.Initialize(ctx);
-
-        ctx.Initialize(this, fsm, moveComponent, animator);
-
+        effectComponent.Initialize(ctx);
+        combatComponent.Initialize(ctx);
+        animator = GetComponentInChildren<Animator>();
+       
         fsm.AddState(new IdleState(ctx));
         fsm.AddState(new WalkState(ctx));
+        fsm.ChangeState<IdleState>();
+
+        ctx.Initialize(this, fsm, moveComponent,effectComponent, animator,combatComponent);
+
+        moveComponent.JumpFinishEvent += JumpFinished;
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        moveComponent.JumpFinishEvent -= JumpFinished;
+    }
+
+    protected override void Start()
+    {
+        base.Start();
     }
 
     protected override void OnEnable()
     {
         base.OnEnable();
-
-        fsm.ChangeState<IdleState>();
     }
 
     protected override void Update()
@@ -68,6 +90,12 @@ public class Unit : Entity
 
     private void ShowArrow()
     {
+        if(arrowObject == null || targetPoint == null)
+        {
+            Debug.Log("Something is null -> Unit::ShowArrow");
+            return;
+        }
+
         arrowObject.gameObject.SetActive(true);
         targetPoint.gameObject.SetActive(true);
         float radius = 1f;
@@ -113,8 +141,29 @@ public class Unit : Entity
         }
     }
 
-    public void Jump()
+    public override void Jump()
     {
-       // moveComponent
+        Vector2 startPoint = transform.position;
+        Vector2 endPoint = targetPoint.transform.position;
+        moveComponent.Jump(startPoint, endPoint, 2f, 0.5f);
+
+        animator.SetBool("bJump", true);
+
+        fsm.ChangeState<WalkState>();
+
+        effectComponent.PlayJumpEffect(transform.position);
+    }
+
+    public override void JumpFinished()
+    {
+        base.JumpFinished();
+
+        effectComponent.PlayLandEffect(transform.position);
+    }
+
+    public override void ApplyKnockBack(Vector2 attackPos, float power)
+    {
+        moveComponent.KnockBack(attackPos,power);
+        CalcKnockBackDirection(attackPos);
     }
 }

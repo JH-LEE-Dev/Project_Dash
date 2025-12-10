@@ -6,9 +6,9 @@ public class MoveCommand : ICommand
     {
         Unit unitObject = entity.GetComponent<Unit>();
 
-        if (unitObject != null)
-        {
-            unitObject.Jump();
-        }
+        if (unitObject == null)
+            return;
+
+        unitObject.Jump();
     }
 }

@@ -10,6 +10,18 @@ public class SelectInstaller
     {
         this.inputReader = inputReader; 
         selectManager = new SelectManager();
+
+        if(selectManager == null)
+        {
+            Debug.Log("selectManager is null -> SelectInstaller::Initialize");
+            return;
+        }
+
         selectManager.Initialize(inputReader);
+    }
+
+    public void Release()
+    {
+        selectManager.Release();
     }
 }

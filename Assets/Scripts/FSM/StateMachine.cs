@@ -21,7 +21,7 @@ public class StateMachine
 
         currentState?.Exit();
         currentState = states[type];
-        currentState.Enter();
+        currentState?.Enter();
     }
 
     public void Update()

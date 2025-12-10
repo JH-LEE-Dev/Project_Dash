@@ -11,3 +11,9 @@ public enum Dir8
     South,
     SouthEast
 }
+
+public enum JumpState
+{
+    Jump,
+    Land
+}

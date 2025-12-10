@@ -7,7 +7,12 @@ public class CommandFactory
     {
         ICommand cmd = new MoveCommand();
 
-        return null;
+        if(cmd == null)
+        {
+            Debug.Log("Command is null -> CommandFactory::CreateMoveCommand");
+        }
+
+        return cmd;
     }
 
     public ICommand CreateSelectedCommand()

@@ -16,16 +16,27 @@ public class CommandController
 
     public void HandleLeftClick(Vector2 point)
     {
-        selectManager.HandleLeftClick(point);
+        if (selectManager == null)
+        {
+            Debug.Log("select Manager is null! -> CommandController::HandleLeftClick");
+            return;
+        }
 
+        selectManager.HandleLeftClick(point);
     }
 
     public void HandleLeftClickReleased()
     {
-        Debug.Log("LeftClick Released");
+        if(factory == null || selectManager == null || dispatcher == null)
+        {
+            Debug.Log("Something is null -> CommandController::HandleLeftClickReleased");
+            return;
+        }
+
         ICommand cmd = factory.CreateMoveCommand();
 
         Entity selectedUnit = selectManager.GetSelectedObject();
+
         dispatcher.Dispatch(selectedUnit, cmd);
     }
 }

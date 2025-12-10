@@ -100,6 +100,15 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToSpawnMode"",
+                    ""type"": ""Button"",
+                    ""id"": ""edc8d49c-e425-4f7c-8e1c-584d33249166"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -113,6 +122,85 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
                     ""action"": ""LeftClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ba86ab45-3d61-4b62-9145-d9746126b425"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToSpawnMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""System"",
+            ""id"": ""14f7942e-384d-4ab9-9df1-91151ecbb74e"",
+            ""actions"": [
+                {
+                    ""name"": ""ToCombatMode"",
+                    ""type"": ""Button"",
+                    ""id"": ""54893b58-30d2-454e-af3c-85148e947468"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SpawnButton"",
+                    ""type"": ""Button"",
+                    ""id"": ""daf51fce-2496-463d-85fa-4dccc3732dbd"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwitchPrefab"",
+                    ""type"": ""Button"",
+                    ""id"": ""fa4ee4a9-533a-481e-bce0-e55fbde6b141"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""4ae19cd1-3440-40d4-b751-1cc9ad8c3fba"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToCombatMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2fa2cc00-0e72-4182-9732-84cdd3238ed1"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpawnButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""02ed9915-93ae-4499-8bb1-a209b62f8bcd"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchPrefab"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -122,11 +210,18 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
         // Combat
         m_Combat = asset.FindActionMap("Combat", throwIfNotFound: true);
         m_Combat_LeftClick = m_Combat.FindAction("LeftClick", throwIfNotFound: true);
+        m_Combat_ToSpawnMode = m_Combat.FindAction("ToSpawnMode", throwIfNotFound: true);
+        // System
+        m_System = asset.FindActionMap("System", throwIfNotFound: true);
+        m_System_ToCombatMode = m_System.FindAction("ToCombatMode", throwIfNotFound: true);
+        m_System_SpawnButton = m_System.FindAction("SpawnButton", throwIfNotFound: true);
+        m_System_SwitchPrefab = m_System.FindAction("SwitchPrefab", throwIfNotFound: true);
     }
 
     ~@InputActionSystem()
     {
         UnityEngine.Debug.Assert(!m_Combat.enabled, "This will cause a leak and performance issues, InputActionSystem.Combat.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_System.enabled, "This will cause a leak and performance issues, InputActionSystem.System.Disable() has not been called.");
     }
 
     /// <summary>
@@ -203,6 +298,7 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Combat;
     private List<ICombatActions> m_CombatActionsCallbackInterfaces = new List<ICombatActions>();
     private readonly InputAction m_Combat_LeftClick;
+    private readonly InputAction m_Combat_ToSpawnMode;
     /// <summary>
     /// Provides access to input actions defined in input action map "Combat".
     /// </summary>
@@ -218,6 +314,10 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Combat/LeftClick".
         /// </summary>
         public InputAction @LeftClick => m_Wrapper.m_Combat_LeftClick;
+        /// <summary>
+        /// Provides access to the underlying input action "Combat/ToSpawnMode".
+        /// </summary>
+        public InputAction @ToSpawnMode => m_Wrapper.m_Combat_ToSpawnMode;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -247,6 +347,9 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
             @LeftClick.started += instance.OnLeftClick;
             @LeftClick.performed += instance.OnLeftClick;
             @LeftClick.canceled += instance.OnLeftClick;
+            @ToSpawnMode.started += instance.OnToSpawnMode;
+            @ToSpawnMode.performed += instance.OnToSpawnMode;
+            @ToSpawnMode.canceled += instance.OnToSpawnMode;
         }
 
         /// <summary>
@@ -261,6 +364,9 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
             @LeftClick.started -= instance.OnLeftClick;
             @LeftClick.performed -= instance.OnLeftClick;
             @LeftClick.canceled -= instance.OnLeftClick;
+            @ToSpawnMode.started -= instance.OnToSpawnMode;
+            @ToSpawnMode.performed -= instance.OnToSpawnMode;
+            @ToSpawnMode.canceled -= instance.OnToSpawnMode;
         }
 
         /// <summary>
@@ -294,6 +400,124 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="CombatActions" /> instance referencing this action map.
     /// </summary>
     public CombatActions @Combat => new CombatActions(this);
+
+    // System
+    private readonly InputActionMap m_System;
+    private List<ISystemActions> m_SystemActionsCallbackInterfaces = new List<ISystemActions>();
+    private readonly InputAction m_System_ToCombatMode;
+    private readonly InputAction m_System_SpawnButton;
+    private readonly InputAction m_System_SwitchPrefab;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "System".
+    /// </summary>
+    public struct SystemActions
+    {
+        private @InputActionSystem m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public SystemActions(@InputActionSystem wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "System/ToCombatMode".
+        /// </summary>
+        public InputAction @ToCombatMode => m_Wrapper.m_System_ToCombatMode;
+        /// <summary>
+        /// Provides access to the underlying input action "System/SpawnButton".
+        /// </summary>
+        public InputAction @SpawnButton => m_Wrapper.m_System_SpawnButton;
+        /// <summary>
+        /// Provides access to the underlying input action "System/SwitchPrefab".
+        /// </summary>
+        public InputAction @SwitchPrefab => m_Wrapper.m_System_SwitchPrefab;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_System; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="SystemActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(SystemActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="SystemActions" />
+        public void AddCallbacks(ISystemActions instance)
+        {
+            if (instance == null || m_Wrapper.m_SystemActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_SystemActionsCallbackInterfaces.Add(instance);
+            @ToCombatMode.started += instance.OnToCombatMode;
+            @ToCombatMode.performed += instance.OnToCombatMode;
+            @ToCombatMode.canceled += instance.OnToCombatMode;
+            @SpawnButton.started += instance.OnSpawnButton;
+            @SpawnButton.performed += instance.OnSpawnButton;
+            @SpawnButton.canceled += instance.OnSpawnButton;
+            @SwitchPrefab.started += instance.OnSwitchPrefab;
+            @SwitchPrefab.performed += instance.OnSwitchPrefab;
+            @SwitchPrefab.canceled += instance.OnSwitchPrefab;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="SystemActions" />
+        private void UnregisterCallbacks(ISystemActions instance)
+        {
+            @ToCombatMode.started -= instance.OnToCombatMode;
+            @ToCombatMode.performed -= instance.OnToCombatMode;
+            @ToCombatMode.canceled -= instance.OnToCombatMode;
+            @SpawnButton.started -= instance.OnSpawnButton;
+            @SpawnButton.performed -= instance.OnSpawnButton;
+            @SpawnButton.canceled -= instance.OnSpawnButton;
+            @SwitchPrefab.started -= instance.OnSwitchPrefab;
+            @SwitchPrefab.performed -= instance.OnSwitchPrefab;
+            @SwitchPrefab.canceled -= instance.OnSwitchPrefab;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="SystemActions.UnregisterCallbacks(ISystemActions)" />.
+        /// </summary>
+        /// <seealso cref="SystemActions.UnregisterCallbacks(ISystemActions)" />
+        public void RemoveCallbacks(ISystemActions instance)
+        {
+            if (m_Wrapper.m_SystemActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="SystemActions.AddCallbacks(ISystemActions)" />
+        /// <seealso cref="SystemActions.RemoveCallbacks(ISystemActions)" />
+        /// <seealso cref="SystemActions.UnregisterCallbacks(ISystemActions)" />
+        public void SetCallbacks(ISystemActions instance)
+        {
+            foreach (var item in m_Wrapper.m_SystemActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_SystemActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="SystemActions" /> instance referencing this action map.
+    /// </summary>
+    public SystemActions @System => new SystemActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Combat" which allows adding and removing callbacks.
     /// </summary>
@@ -308,5 +532,41 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLeftClick(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ToSpawnMode" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToSpawnMode(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "System" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="SystemActions.AddCallbacks(ISystemActions)" />
+    /// <seealso cref="SystemActions.RemoveCallbacks(ISystemActions)" />
+    public interface ISystemActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "ToCombatMode" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToCombatMode(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SpawnButton" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSpawnButton(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SwitchPrefab" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSwitchPrefab(InputAction.CallbackContext context);
     }
 }

@@ -1,7 +1,7 @@
 using System.Drawing;
 using UnityEngine;
 
-public class CommandController
+public class CommandController : ICommandSystem
 {
     [SerializeField] private CommandFactory factory;
     [SerializeField] private CommandDispatcher dispatcher;
@@ -38,5 +38,18 @@ public class CommandController
         Entity selectedUnit = selectManager.GetSelectedObject();
 
         dispatcher.Dispatch(selectedUnit, cmd);
+    }
+
+    public void ApplyKnockBackCommand(Entity entity, Vector2 attackPos, float power)
+    {
+        if (factory == null || dispatcher == null)
+        {
+            Debug.Log("Something is null -> CommandController::ApplyKnockBackCommand");
+            return;
+        }
+
+        ICommand cmd = factory.CreateKnockBackCommand(attackPos, power);
+
+        dispatcher.Dispatch(entity, cmd);
     }
 }

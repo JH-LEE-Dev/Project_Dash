@@ -44,9 +44,14 @@ public class Unit : Entity
         fsm.AddState(new WalkState(ctx));
         fsm.ChangeState<IdleState>();
 
-        ctx.Initialize(this, fsm, moveComponent,effectComponent, animator,combatComponent);
-
         moveComponent.JumpFinishEvent += JumpFinished;
+    }
+
+    public override void Initialize(ICommandSystem commandSystem)
+    {
+        base.Initialize(commandSystem);
+
+        ctx.Initialize(this, fsm, moveComponent, effectComponent, animator, combatComponent, commandSystem);
     }
 
     protected override void OnDestroy()
@@ -129,13 +134,17 @@ public class Unit : Entity
 
             arrowObject.GetComponent<SpriteRenderer>().size = new Vector2(curWidth, curLength);
 
-            jumpLength += targetSpeed * Time.deltaTime;
+            Vector2 mousePos = CalcMousePos();
+            Vector2 delta = mousePos - (Vector2)transform.position;
+
+            //jumpLength += targetSpeed * Time.deltaTime;
 
             if (jumpLength > 10)
                 jumpLength = 10;
 
             Vector2 direction = -jumpVector.normalized;
-            Vector2 displacement = direction * jumpLength;
+            //Vector2 displacement = direction * jumpLength;
+            Vector2 displacement = direction * delta.magnitude;
 
             targetPoint.transform.position = (Vector2)transform.position + displacement;
         }
@@ -152,6 +161,11 @@ public class Unit : Entity
         fsm.ChangeState<WalkState>();
 
         effectComponent.PlayJumpEffect(transform.position);
+        Sound.Play("Jump", transform.position, 1f, false);
+
+        //test code
+        if (bTest)
+            animator.SetInteger("UnitState", (int)UnitState.DashStart);
     }
 
     public override void JumpFinished()
@@ -159,11 +173,18 @@ public class Unit : Entity
         base.JumpFinished();
 
         effectComponent.PlayLandEffect(transform.position);
+        Sound.Play("Land", transform.position, 1f, false);
+
+        //test code
+        if (bTest)
+            animator.SetInteger("UnitState", (int)UnitState.Attack);
     }
 
     public override void ApplyKnockBack(Vector2 attackPos, float power)
     {
         moveComponent.KnockBack(attackPos,power);
         CalcKnockBackDirection(attackPos);
+        effectComponent.PlayKnockBackEffect(transform.position);
+        Sound.Play("KnockBack", transform.position, 1f, false);
     }
 }

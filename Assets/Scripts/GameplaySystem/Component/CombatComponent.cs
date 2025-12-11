@@ -39,7 +39,7 @@ public class CombatComponent : EntityComponent
 
             if (u != null)
             {
-                u.ApplyKnockBack(transform.position,2f);
+                ctx.ApplyKnockBackCommand(u, transform.position, 2f);
             }
         }
     }

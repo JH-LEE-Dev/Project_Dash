@@ -6,15 +6,17 @@ using UnityEngine.XR;
 //의존성 역전도 실현
 public class UnitContext
 {
-    public Unit unit;
-    public MoveComponent moveComponent { get; private set; }
-    public EffectComponent effectComponent { get; private set; }
-    public CombatComponent combatComponent { get; private set; }
+    private Unit unit;
+    private MoveComponent moveComponent;
+    private EffectComponent effectComponent;
+    private CombatComponent combatComponent;
     public StateMachine fsm { get; private set; }
     public Animator animator { get; private set; }
 
+    private ICommandSystem commandSystem;
+
     public void Initialize(Unit unit, StateMachine fsm, MoveComponent moveComponent,EffectComponent effectComponent,
-        Animator animator,CombatComponent combatComponent)
+        Animator animator,CombatComponent combatComponent,ICommandSystem commandSystem)
     {
         this.unit = unit;
         this.fsm = fsm;
@@ -22,6 +24,7 @@ public class UnitContext
         this.effectComponent = effectComponent;
         this.animator = animator;
         this.combatComponent = combatComponent;
+        this.commandSystem = commandSystem;
     }
 
     public void Update()
@@ -59,5 +62,16 @@ public class UnitContext
     public void ApplyKnockBack()
     {
         combatComponent.ApplyKnockBack(unit.GetCollider());
+    }
+
+    public void ApplyKnockBackCommand(Entity entity,Vector2 attackPos,float power)
+    {
+        if(commandSystem == null)
+        {
+            Debug.Log("commandSystem is null -> UnitContext::ApplyKnockBackCommand");
+            return;
+        }
+
+        commandSystem.ApplyKnockBackCommand(entity,attackPos, power);
     }
 }

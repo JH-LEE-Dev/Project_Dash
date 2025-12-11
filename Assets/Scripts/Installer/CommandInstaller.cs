@@ -8,7 +8,6 @@ public class CommandInstaller
     private CommandDispatcher commandDispatcher;
 
     [Header("Selected Object")]
-    [SerializeField] private MonoBehaviour targetProviderBehaviour;
     private SelectManager selectManager;
 
     public void Initialize(InputReader _inputReader,SelectManager _selectManager)
@@ -34,5 +33,10 @@ public class CommandInstaller
     {
         inputReader.LeftClickEvent -= commandController.HandleLeftClick;
         inputReader.LeftClickReleasedEvent -= commandController.HandleLeftClickReleased;
+    }
+
+    public ICommandSystem GetCommandController()
+    {
+        return commandController;
     }
 }

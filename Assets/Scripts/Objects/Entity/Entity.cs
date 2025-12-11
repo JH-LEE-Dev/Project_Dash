@@ -6,6 +6,11 @@ using UnityEngine.InputSystem;
 
 public class Entity : MonoBehaviour
 {
+    //test code
+    [SerializeField] protected bool bTest = false;
+
+    protected ICommandSystem commandSystem;
+
     [Header("Components")]
     protected Rigidbody2D rb;
     protected Collider2D col;
@@ -26,9 +31,9 @@ public class Entity : MonoBehaviour
     [SerializeField] protected GameObject outlineObject;
     protected OutLine outline;
 
-    public virtual void Initialize()
+    public virtual void Initialize(ICommandSystem commandSystem)
     {
-
+        this.commandSystem = commandSystem;
     }
 
     protected virtual void Awake()
@@ -48,7 +53,7 @@ public class Entity : MonoBehaviour
 
     protected virtual void Start()
     {
-       
+
     }
 
     protected virtual void OnEnable()
@@ -118,6 +123,10 @@ public class Entity : MonoBehaviour
         }
 
         outline.ShowOutLine(sr.sprite);
+
+        //test code
+        if (bTest)
+            animator.SetInteger("UnitState", (int)UnitState.CombatStart);
     }
 
     public void HideOutLine()
@@ -125,6 +134,10 @@ public class Entity : MonoBehaviour
         outline.HideOutLine();
         arrowObject.gameObject.SetActive(false);
         targetPoint.gameObject.SetActive(false);
+
+        //test code
+        if (bTest)
+            animator.SetInteger("UnitState", (int)UnitState.DashStart);
     }
 
     protected Vector2 CalcMousePos()
@@ -161,16 +174,16 @@ public class Entity : MonoBehaviour
 
     protected void CalcKnockBackDirection(Vector2 attackPos)
     {
-        Vector2 dir = (Vector2)transform.position - attackPos;   // 방향 벡터
+        Vector2 dir = (Vector2)transform.position - attackPos;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
+        //마우스 방향과 반대 방향으로 점프.
         angle += 180f;
 
         // -180~180 → 0~360 보정
         if (angle < 0)
             angle += 360f;
 
-        // 8방향은 45° 단위 → 360/8 = 45
         int index = Mathf.RoundToInt(angle / 45f) % 8;
 
         jumpDirection = (Dir8)index;
@@ -207,6 +220,13 @@ public class Entity : MonoBehaviour
 
     public virtual void ApplyKnockBack(Vector2 attackPos, float power)
     {
-        
+
+    }
+
+    public virtual void Flip()
+    {
+        Vector3 scale = transform.localScale;
+        scale.x *= -1;
+        transform.localScale = scale;
     }
 }

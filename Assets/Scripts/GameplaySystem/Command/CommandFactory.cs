@@ -19,5 +19,13 @@ public class CommandFactory
     {
         return null;
     }
+
+    public ICommand CreateKnockBackCommand(Vector2 attackPos,float power)
+    {
+        KnockBackCommand command = new KnockBackCommand();
+        command.Initialize(attackPos, power);
+
+        return command;
+    }
 }
 

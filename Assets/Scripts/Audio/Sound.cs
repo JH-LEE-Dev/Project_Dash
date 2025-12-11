@@ -19,4 +19,12 @@ public static class Sound
         AudioEvent e = new AudioEvent(id, Vector3.zero, volume, false);
         AudioManager.Instance.EnqueueEvent(e);
     }
+
+    public static void PlayBGM(string id, float volume = 1f)
+    {
+        if (AudioManager.Instance == null)
+            return;
+
+        AudioManager.Instance.PlayBGM(id, volume);
+    }
 }

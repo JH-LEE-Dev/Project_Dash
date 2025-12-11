@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 
 public class InputReader
 {
+    private DIServiceLocator diServiceLocator;
+
     public event Action<Vector2> LeftClickEvent;
     public event Action LeftClickReleasedEvent;
     public event Action<Vector2> SpawnButtonPressedEvent;
@@ -11,8 +13,10 @@ public class InputReader
 
     private InputActionSystem actions;
 
-    public void Initialize()
+    public void Initialize(DIServiceLocator diServiceLocator)
     {
+        this.diServiceLocator = diServiceLocator;
+
         if (actions == null)
         {
             actions = new InputActionSystem();
@@ -58,12 +62,14 @@ public class InputReader
     {
         actions.Combat.Disable();
         actions.System.Enable();
+        UIManager.Instance.Open<SpawnUIView>();
     }
 
     private void ToCombatModeKeyPressed(InputAction.CallbackContext context)
     {
         actions.Combat.Enable();
         actions.System.Disable();
+        UIManager.Instance.Close<SpawnUIView>();
     }
 
     private void SwitchPrefabButtonPressed(InputAction.CallbackContext context)

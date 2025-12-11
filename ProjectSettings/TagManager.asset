@@ -44,7 +44,7 @@ TagManager:
   - name: Floor
     uniqueID: 1361997565
     locked: 0
-  - name: Effect
+  - name: JumpEffect
     uniqueID: 984969781
     locked: 0
   - name: Outline
@@ -52,6 +52,9 @@ TagManager:
     locked: 0
   - name: Unit
     uniqueID: 1888722717
+    locked: 0
+  - name: KnockBackEffect
+    uniqueID: 2300114755
     locked: 0
   m_RenderingLayers:
   - Default

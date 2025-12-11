@@ -4,18 +4,25 @@ public class EffectComponent : EntityComponent
 {
 
     [Header("Effect System")]
-    protected Animator animator;
-    [SerializeField] protected GameObject effectObject;
+    protected Animator jumpAnimator;
+    protected Animator knockBackAnimator;
+    [SerializeField] protected GameObject jumpEffectObject;
+    [SerializeField] protected GameObject knockBackEffectObject;
     [SerializeField] protected GameObject shadowObject;
     protected Vector2 shadowPos;
-    protected Vector2 playPosition;
+    protected Vector2 jumpPlayPosition;
+    protected Vector2 knockBackPlayPosition;
+
 
     protected override void Awake()
     {
         base.Awake();
 
-        animator = effectObject.gameObject.GetComponentInChildren<Animator>();
-        effectObject.SetActive(false);
+        jumpAnimator = jumpEffectObject.gameObject.GetComponentInChildren<Animator>();
+        knockBackAnimator = knockBackEffectObject.gameObject.GetComponentInChildren<Animator>();
+        jumpEffectObject.SetActive(false);
+        knockBackEffectObject.SetActive(false);
+        knockBackEffectObject.transform.localScale = new Vector3(0.5f, 0.5f, 1f);
 
         shadowPos = transform.position;
         shadowPos.y -= 0.4f;
@@ -26,7 +33,8 @@ public class EffectComponent : EntityComponent
     {
         base.Update();
 
-        effectObject.transform.position = playPosition;
+        jumpEffectObject.transform.position = jumpPlayPosition;
+        knockBackEffectObject.transform.position = knockBackPlayPosition;
         HandleShadowPos();
     }
 
@@ -43,18 +51,27 @@ public class EffectComponent : EntityComponent
 
     public virtual void PlayJumpEffect(Vector2 position)
     {
-        effectObject.gameObject.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
-        effectObject.SetActive(true);
-        playPosition = position;
-        animator.SetInteger("JumpState", (int)JumpState.Jump);
+        jumpEffectObject.SetActive(true);
+        jumpEffectObject.gameObject.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
+        jumpPlayPosition = position;
+        jumpAnimator.SetInteger("JumpState", (int)JumpState.Jump);
     }
 
     public virtual void PlayLandEffect(Vector2 position)
     {
-        effectObject.gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
-        effectObject.SetActive(true);
-        playPosition = position;
-        animator.SetInteger("JumpState", (int)JumpState.Land);
+        jumpEffectObject.SetActive(true);
+        jumpEffectObject.gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
+        jumpPlayPosition = position;
+        jumpAnimator.SetInteger("JumpState", (int)JumpState.Land);
+    }
+
+    public virtual void PlayKnockBackEffect(Vector2 position)
+    {
+        jumpAnimator.SetInteger("JumpState", (int)JumpState.Default);
+
+        knockBackPlayPosition = position;
+        knockBackEffectObject.SetActive(true);
+        knockBackAnimator.SetBool("bKnockBack",true);
     }
 
     public virtual void HandleShadowPos()

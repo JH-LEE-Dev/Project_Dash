@@ -3,15 +3,16 @@ using UnityEngine;
 public class UnitSpawner : MonoBehaviour
 {
     [Header("Unit Prefabs")]
-    bool bUnitType = false;
+    bool bUnitType = true;
     private GameObject unitPrefab;
     [SerializeField] private GameObject playerUnitPrefab;
     [SerializeField] private GameObject enemyUnitPrefab;
+    private ICommandSystem commandSystem;
 
     [Header("Common Attribute")]
     private InputReader inputReader;
 
-    public void Initiallize(InputReader _inputReader)
+    public void Initiallize(InputReader _inputReader,ICommandSystem commandSystem)
     {
         inputReader = _inputReader;
 
@@ -23,6 +24,10 @@ public class UnitSpawner : MonoBehaviour
 
         inputReader.SwitchPrefabButtonPressedEvent += SwitchPrefab;
         inputReader.SpawnButtonPressedEvent += SpawnUnit;
+        
+        this.commandSystem = commandSystem;
+
+        unitPrefab = playerUnitPrefab;
     }
 
     public void OnDestroy()
@@ -37,7 +42,15 @@ public class UnitSpawner : MonoBehaviour
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(sp);
         worldPos.z = 0;
 
-        GameObject Entity = Instantiate(unitPrefab, worldPos, Quaternion.identity);
+        GameObject obj = Instantiate(unitPrefab, worldPos, Quaternion.identity);
+
+        Entity entity = obj.GetComponent<Entity>();
+
+        if(entity != null)
+        {
+
+            entity.Initialize(commandSystem);
+        }
     }
 
     public void SwitchPrefab()

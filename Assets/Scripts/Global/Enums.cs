@@ -14,6 +14,26 @@ public enum Dir8
 
 public enum JumpState
 {
+    Default,
     Jump,
-    Land
+    Land,
+}
+
+public enum UnitState
+{
+    Idle,
+    CombatIdle,
+    CombatStart,
+    DashStart,
+    Dash,
+    Attack,
+    Landing,
+}
+
+public enum UILayer
+{
+    Screen,     // 전체 화면 (인벤토리, 설정, 메인메뉴 등)
+    Popup,      // 작은 팝업 (경고, 확인창 등)
+    Overlay,    // HUD, 체력바, 미니맵 등
+    Tooltip     // 툴팁, 마우스 오버 텍스트 등
 }

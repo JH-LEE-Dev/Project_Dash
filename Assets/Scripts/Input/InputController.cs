@@ -4,7 +4,7 @@ public class InputController
 {
     public InputReader inputReader { get; private set; }
 
-    public void Initialize()
+    public void Initialize(DIServiceLocator diServiceLocator)
     {
         inputReader = new CombatInputReader();
 
@@ -14,6 +14,6 @@ public class InputController
             return;
         }
 
-        inputReader.Initialize();
+        inputReader.Initialize(diServiceLocator);
     }
 }

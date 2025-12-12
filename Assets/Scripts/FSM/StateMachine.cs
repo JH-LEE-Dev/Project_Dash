@@ -28,4 +28,9 @@ public class StateMachine
     {
         currentState?.Update();
     }
+
+    public bool IsState<T>() where T : IState
+    {
+        return currentState != null && currentState.GetType() == typeof(T);
+    }
 }

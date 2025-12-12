@@ -2,14 +2,17 @@ using UnityEngine;
 
 public class IdleState : GroundedState
 {
-    public IdleState(UnitContext ctx)
+    public IdleState(Entity entity)
     {
-        this.ctx = ctx;
+        this.entity = entity;
     }
 
     public override void Enter()
     {
         base.Enter();
+
+        entity.animator?.SetInteger("UnitState", (int)UnitState.Idle);
+        entity.HideOutLine();
     }
 
     public override void Exit()

@@ -4,13 +4,13 @@ public class EffectComponent : EntityComponent
 {
 
     [Header("Effect System")]
-    protected Animator jumpAnimator;
+    protected Animator dashAnimator;
     protected Animator knockBackAnimator;
-    [SerializeField] protected GameObject jumpEffectObject;
+    [SerializeField] protected GameObject dashEffectObject;
     [SerializeField] protected GameObject knockBackEffectObject;
     [SerializeField] protected GameObject shadowObject;
     protected Vector2 shadowPos;
-    protected Vector2 jumpPlayPosition;
+    protected Vector2 dashPlayPosition;
     protected Vector2 knockBackPlayPosition;
 
 
@@ -18,9 +18,9 @@ public class EffectComponent : EntityComponent
     {
         base.Awake();
 
-        jumpAnimator = jumpEffectObject.gameObject.GetComponentInChildren<Animator>();
+        dashAnimator = dashEffectObject.gameObject.GetComponentInChildren<Animator>();
         knockBackAnimator = knockBackEffectObject.gameObject.GetComponentInChildren<Animator>();
-        jumpEffectObject.SetActive(false);
+        dashEffectObject.SetActive(false);
         knockBackEffectObject.SetActive(false);
         knockBackEffectObject.transform.localScale = new Vector3(0.5f, 0.5f, 1f);
 
@@ -33,7 +33,7 @@ public class EffectComponent : EntityComponent
     {
         base.Update();
 
-        jumpEffectObject.transform.position = jumpPlayPosition;
+        dashEffectObject.transform.position = dashPlayPosition;
         knockBackEffectObject.transform.position = knockBackPlayPosition;
         HandleShadowPos();
     }
@@ -49,25 +49,25 @@ public class EffectComponent : EntityComponent
         shadowPos.y -= 0.4f;
     }
 
-    public virtual void PlayJumpEffect(Vector2 position)
+    public virtual void PlayDashEffect(Vector2 position)
     {
-        jumpEffectObject.SetActive(true);
-        jumpEffectObject.gameObject.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
-        jumpPlayPosition = position;
-        jumpAnimator.SetInteger("JumpState", (int)JumpState.Jump);
+        dashEffectObject.SetActive(true);
+        dashEffectObject.gameObject.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
+        dashPlayPosition = position;
+        dashAnimator.SetInteger("DashEffectState", (int)DashEffectState.Dash);
     }
 
     public virtual void PlayLandEffect(Vector2 position)
     {
-        jumpEffectObject.SetActive(true);
-        jumpEffectObject.gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
-        jumpPlayPosition = position;
-        jumpAnimator.SetInteger("JumpState", (int)JumpState.Land);
+        dashEffectObject.SetActive(true);
+        dashEffectObject.gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
+        dashPlayPosition = position;
+        dashAnimator.SetInteger("DashEffectState", (int)DashEffectState.Land);
     }
 
     public virtual void PlayKnockBackEffect(Vector2 position)
     {
-        jumpAnimator.SetInteger("JumpState", (int)JumpState.Default);
+        dashAnimator.SetInteger("DashEffectState", (int)DashEffectState.Default);
 
         knockBackPlayPosition = position;
         knockBackEffectObject.SetActive(true);

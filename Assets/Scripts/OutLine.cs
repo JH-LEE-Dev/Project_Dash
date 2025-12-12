@@ -12,15 +12,15 @@ public class OutLine : MonoBehaviour
 
     public void ShowOutLine(Sprite currentSprite)
     {
-        sr.sprite = currentSprite;
         gameObject.SetActive(true);
+        sr.sprite = currentSprite;
         transform.localScale = new Vector3(1.2f, 1.2f, 1f); // 10% 확대
     }
 
     public void HideOutLine()
     {
-        gameObject.SetActive(false);
         transform.localScale = new Vector3(1f, 1f, 1f); // 기본 크기
+        gameObject.SetActive(false);
     }
 
     public void SetCurrentSprite(Sprite sprite)

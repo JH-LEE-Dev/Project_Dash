@@ -1,5 +1,6 @@
 using System.Drawing;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class CommandController : ICommandSystem
 {
@@ -25,7 +26,7 @@ public class CommandController : ICommandSystem
         selectManager.HandleLeftClick(point);
     }
 
-    public void HandleLeftClickReleased()
+    public void HandleLeftClickReleased(Vector2 screenPos)
     {
         if(factory == null || selectManager == null || dispatcher == null)
         {
@@ -33,11 +34,17 @@ public class CommandController : ICommandSystem
             return;
         }
 
-        ICommand cmd = factory.CreateMoveCommand();
+        selectManager.HandleLeftClickReleased(screenPos);
 
         Entity selectedUnit = selectManager.GetSelectedObject();
 
-        dispatcher.Dispatch(selectedUnit, cmd);
+        if(selectedUnit && selectedUnit.IsCharging())
+        {
+            ICommand cmd = factory.CreateMoveCommand();
+            dispatcher.Dispatch(selectedUnit, cmd);
+
+            selectManager.ResetSelectedUnit();
+        }
     }
 
     public void ApplyKnockBackCommand(Entity entity, Vector2 attackPos, float power)
@@ -49,6 +56,32 @@ public class CommandController : ICommandSystem
         }
 
         ICommand cmd = factory.CreateKnockBackCommand(attackPos, power);
+
+        dispatcher.Dispatch(entity, cmd);
+    }
+
+    public void ApplyAttackCommand(Entity entity)
+    {
+        if (factory == null || dispatcher == null)
+        {
+            Debug.Log("Something is null -> CommandController::ApplyAttackCommand");
+            return;
+        }
+
+        ICommand cmd = factory.CreateAttackCommand();
+
+        dispatcher.Dispatch(entity, cmd);
+    }
+
+    public void ApplyConflictKnockBackCommand(Entity entity)
+    {
+        if (factory == null || dispatcher == null)
+        {
+            Debug.Log("Something is null -> CommandController::ApplyAttackCommand");
+            return;
+        }
+
+        ICommand cmd = factory.CreateConflictKnockBackCommand();
 
         dispatcher.Dispatch(entity, cmd);
     }

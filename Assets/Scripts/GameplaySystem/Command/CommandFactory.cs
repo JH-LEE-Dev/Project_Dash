@@ -5,7 +5,7 @@ public class CommandFactory
     //객체 풀 사용해야 함.
     public ICommand CreateMoveCommand()
     {
-        ICommand cmd = new MoveCommand();
+        ICommand cmd = new DashCommand();
 
         if(cmd == null)
         {
@@ -24,6 +24,20 @@ public class CommandFactory
     {
         KnockBackCommand command = new KnockBackCommand();
         command.Initialize(attackPos, power);
+
+        return command;
+    }
+
+    public ICommand CreateAttackCommand()
+    {
+        AttackCommand command = new AttackCommand();
+
+        return command;
+    }
+
+    public ICommand CreateConflictKnockBackCommand()
+    {
+        ConflictKnockBackCommand command = new ConflictKnockBackCommand();
 
         return command;
     }

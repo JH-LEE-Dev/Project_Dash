@@ -12,10 +12,10 @@ public enum Dir8
     SouthEast
 }
 
-public enum JumpState
+public enum DashEffectState
 {
     Default,
-    Jump,
+    Dash,
     Land,
 }
 
@@ -28,6 +28,7 @@ public enum UnitState
     Dash,
     Attack,
     Landing,
+    Charging
 }
 
 public enum UILayer

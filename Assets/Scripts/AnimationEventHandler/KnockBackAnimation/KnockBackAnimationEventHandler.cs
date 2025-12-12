@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//For KnockBack Effect
 public class KnockBackAnimationEventHandler : MonoBehaviour
 {
     private Animator animator;

@@ -7,7 +7,7 @@ public class InputReader
     private DIServiceLocator diServiceLocator;
 
     public event Action<Vector2> LeftClickEvent;
-    public event Action LeftClickReleasedEvent;
+    public event Action<Vector2> LeftClickReleasedEvent;
     public event Action<Vector2> SpawnButtonPressedEvent;
     public event Action SwitchPrefabButtonPressedEvent;
 
@@ -48,7 +48,9 @@ public class InputReader
 
     private void OnLeftClickReleased(InputAction.CallbackContext context)
     {
-        LeftClickReleasedEvent?.Invoke();
+        Vector2 screenPos = Mouse.current.position.ReadValue();
+
+        LeftClickReleasedEvent?.Invoke(screenPos);
     }
 
     private void SpawnButtonPressed(InputAction.CallbackContext context)

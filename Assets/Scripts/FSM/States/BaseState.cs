@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BaseState : IState
 {
-    protected UnitContext ctx;
+    protected Entity entity;
 
     virtual public void Enter()
     {

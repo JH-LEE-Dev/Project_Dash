@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class WalkState : GroundedState
 {
-    public WalkState(UnitContext ctx)
+    public WalkState(Entity entity)
     {
-        this.ctx = ctx;
+        this.entity = entity;
     }
 
     public override void Enter()

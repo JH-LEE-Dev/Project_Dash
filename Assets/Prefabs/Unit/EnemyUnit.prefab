@@ -814,6 +814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20ec2a4f9c57ba84fabac24035448d82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Unit
+  bTest: 0
   arrowObject: {fileID: 2240458190443309050}
   targetPoint: {fileID: 2544707004595093777}
   outlineObject: {fileID: 887622491212859227}
@@ -847,6 +848,7 @@ MonoBehaviour:
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  attackStrategy: {fileID: 11400000, guid: e88876ebc263b7542baabbe171263158, type: 2}
 --- !u!1 &3696551467795115820
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.XR;
+using static UnityEngine.EventSystems.EventTrigger;
 
 //Component간의 결합을 줄이기 위한 Mediator 역할 + UnitContext 내부의 메서드에서 사용하는 객체들을 최대한 추상화하여
 //의존성 역전도 실현
@@ -32,6 +33,11 @@ public class UnitContext
 
     }
 
+    public Unit GetUnit()
+    {
+        return unit;
+    }
+
     public void SetUnitTransform(Vector2 pos)
     {
         if (unit == null)
@@ -57,21 +63,5 @@ public class UnitContext
     public void SetShadowEffectPos(Vector2 pos)
     {
         effectComponent.SetShadowPos(pos);
-    }
-
-    public void ApplyKnockBack()
-    {
-        combatComponent.ApplyKnockBack(unit.GetCollider());
-    }
-
-    public void ApplyKnockBackCommand(Entity entity,Vector2 attackPos,float power)
-    {
-        if(commandSystem == null)
-        {
-            Debug.Log("commandSystem is null -> UnitContext::ApplyKnockBackCommand");
-            return;
-        }
-
-        commandSystem.ApplyKnockBackCommand(entity,attackPos, power);
     }
 }

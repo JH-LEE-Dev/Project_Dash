@@ -21,6 +21,18 @@ public class UnitAnimationEventHandler : MonoBehaviour
 
     public void AttackFinished()
     {
-        animator.SetInteger("UnitState", (int)UnitState.Idle);
+        Entity entity = GetComponentInParent<Entity>();
+
+        if (entity != null)
+        {
+            if(entity.fsm.IsState<KnockBackState>())
+                animator.SetInteger("UnitState", (int)UnitState.Landing);
+            else
+                animator.SetInteger("UnitState", (int)UnitState.Idle);
+        }
+        else
+        {
+            animator.SetInteger("UnitState", (int)UnitState.Idle);
+        }
     }
 }

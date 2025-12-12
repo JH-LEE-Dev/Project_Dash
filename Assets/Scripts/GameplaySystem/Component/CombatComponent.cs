@@ -3,6 +3,7 @@ using UnityEngine;
 public class CombatComponent : EntityComponent
 {
     [SerializeField] protected LayerMask enemyLayerMask;
+    [SerializeField] protected AttackStrategy attackStrategy;
 
     public override void Initialize(UnitContext _ctx)
     {
@@ -24,23 +25,8 @@ public class CombatComponent : EntityComponent
         base.Update();
     }
 
-    public virtual void ApplyKnockBack(Collider2D collider)
+    public virtual void Attack()
     {
-        Collider2D[] unitBuffer = new Collider2D[50];
-        ContactFilter2D filter = new ContactFilter2D();
-        filter.useTriggers = true;
-        filter.SetLayerMask(enemyLayerMask);
-
-        int count = Physics2D.OverlapCollider(collider, filter, unitBuffer);
-
-        for (int i = 0; i < count; i++)
-        {
-            Entity u = unitBuffer[i].GetComponent<Entity>();
-
-            if (u != null)
-            {
-                ctx.ApplyKnockBackCommand(u, transform.position, 2f);
-            }
-        }
+        attackStrategy.ApplyAttack(ctx.GetUnit(), transform.position, enemyLayerMask);
     }
 }

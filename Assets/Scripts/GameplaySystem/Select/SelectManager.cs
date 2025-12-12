@@ -4,74 +4,104 @@ using UnityEngine.InputSystem;
 public class SelectManager
 {
     private InputReader inputReader;
+    private CameraController cameraController;
+    private Entity selectedObject_Clicked;
     private Entity selectedObject;
 
-    public void Initialize(InputReader inputReader)
+    public void Initialize(InputReader inputReader,CameraController cameraController)
     {
         this.inputReader = inputReader;
+        this.cameraController = cameraController;
 
         if (inputReader == null)
         {
             Debug.Log("inputReader is null -> SelectManager::Initialize");
             return;
         }
-
-        inputReader.LeftClickReleasedEvent += HandleLeftClickReleased;
     }
 
     public void Release()
     {
-        inputReader.LeftClickReleasedEvent -= HandleLeftClickReleased;
+
     }
 
-    public void HandleLeftClick(Vector2 screenPos)
+    public void FindSelectedObject(Vector2 screenPos, bool bClicked)
     {
-        selectedObject = null;
-
         Vector3 sp = screenPos;
         Vector2 worldPos = Camera.main.ScreenToWorldPoint(sp);
 
         Collider2D col = Physics2D.OverlapPoint(worldPos);
 
         if (col == null)
-        {
-            if (selectedObject != null)
-            {
-                selectedObject.HideOutLine();
-            }
-
             return;
-        }
 
         Entity entity = col.GetComponent<Entity>();
 
         if (entity != null)
         {
-            selectedObject = entity;
-            selectedObject.ShowOutLine();
+            if (bClicked == false)
+                selectedObject_Clicked = entity;
+            else 
+                selectedObject = entity;
         }
-        else
+    }
+
+    public void HandleLeftClick(Vector2 screenPos)
+    {
+        FindSelectedObject(screenPos,false);
+
+        if(selectedObject_Clicked != null)
         {
-            if (selectedObject != null)
+            if(selectedObject != null && selectedObject_Clicked != selectedObject)
             {
-                selectedObject.HideOutLine();
+                selectedObject.SetSelected(false);
+            }
+
+            if(selectedObject_Clicked.IsSelected())
+            {
+                selectedObject_Clicked.SetCharging(true);
             }
         }
     }
 
-    private void HandleLeftClickReleased()
+    public void HandleLeftClickReleased(Vector2 screenPos)
     {
+        FindSelectedObject(screenPos,true);
+
         if (selectedObject == null)
         {
-            Debug.Log("selectedObject is null -> SelectManager::HandleLeftCilckReleased");
+            selectedObject_Clicked = null;
+            selectedObject = null;
             return;
         }
 
-        selectedObject.SetSelected(false);
+        if (selectedObject_Clicked == selectedObject)
+        {
+            if (selectedObject.IsSelected())
+            {
+                selectedObject.SetSelected(false);
+            }
+            else
+            {
+                selectedObject.SetSelected(true);
+                cameraController.SetCameraTarget(selectedObject.transform);
+            }
+        }
+        else
+        {
+            selectedObject_Clicked = null;
+            selectedObject = null;
+        }
     }
 
     public Entity GetSelectedObject()
     {
         return selectedObject;
+    }
+
+    public void ResetSelectedUnit()
+    {
+        selectedObject = null;
+        selectedObject_Clicked = null;
     }
 }

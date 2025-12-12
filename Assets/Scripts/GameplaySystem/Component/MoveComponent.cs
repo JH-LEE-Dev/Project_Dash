@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class MoveComponent : EntityComponent
 {
-    public event Action JumpFinishEvent;
+    public event Action DashFinishedEvent;
 
     ParabolaComponent parabolaComponent;
 
-    bool bJump = false;
+    bool bDash = false;
 
     protected override void Awake()
     {
@@ -22,14 +22,14 @@ public class MoveComponent : EntityComponent
             return;
         }
 
-        parabolaComponent.JumpFinishEvent += JumpFinished;
+        parabolaComponent.DashFinishedEvent += DashFinished;
     }
 
     protected override void Update()
     {
         base.Update();
 
-        if (bJump)
+        if (bDash)
         {
             parabolaComponent.Update();
             ctx.SetUnitTransform(parabolaComponent.GetCurrentPos());
@@ -41,42 +41,32 @@ public class MoveComponent : EntityComponent
     {
         base.OnDestroy();
 
-        parabolaComponent.JumpFinishEvent -= JumpFinished;
+        parabolaComponent.DashFinishedEvent -= DashFinished;
     }
 
-    public virtual void ApplyKnockBack()
-    {
-        ctx.ApplyKnockBack();
-    }
-
-    public virtual void Jump(Vector2 start, Vector2 end, float height, float duration)
+    public virtual void Dash(Vector2 start, Vector2 end, float height, float duration)
     {
         if (parabolaComponent == null)
         {
-            Debug.Log("parabolaComponent is null -> PMoveComponent::Jump");
+            Debug.Log("parabolaComponent is null -> PMoveComponent::Dash");
             return;
         }
 
         parabolaComponent.Reset(start, end, height, duration);
-        bJump = true;
+        bDash = true;
     }
 
-    public virtual void JumpFinished()
+    public virtual void DashFinished()
     {
         if (ctx == null)
         {
-            Debug.Log("ctx is null -> PMoveComponent::JumpFinished");
+            Debug.Log("ctx is null -> PMoveComponent::DashFinished");
             return;
         }
 
-        bJump = false;
+        bDash = false;
 
-        ctx.fsm.ChangeState<IdleState>();
-        ctx.animator.SetBool("bJump", false);
-
-        JumpFinishEvent?.Invoke();
-
-        ApplyKnockBack();
+        DashFinishedEvent?.Invoke();
     }
 
     public virtual void KnockBack(Vector2 attackPos,float power)
@@ -88,6 +78,6 @@ public class MoveComponent : EntityComponent
 
         Vector2 landingPos = (Vector2)transform.position + knockBackDir;
 
-        Jump(transform.position, landingPos, 1f, 0.2f);
+        Dash(transform.position, landingPos, 1f, 0.2f);
     }
 }

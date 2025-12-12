@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.UI.CanvasScaler;
 
 public class Entity : MonoBehaviour
 {
@@ -15,16 +16,19 @@ public class Entity : MonoBehaviour
     protected Rigidbody2D rb;
     protected Collider2D col;
     protected SpriteRenderer sr;
-    protected Animator animator;
+    public Animator animator { get; private set; }
+    public StateMachine fsm { get; private set; }
+    protected UnitContext ctx;
 
     [Header("Command System")]
     protected readonly Queue<ICommand> commandQueue = new Queue<ICommand>();
 
-    [Header("Jump Attribute")]
+    [Header("Dash Attribute")]
     [SerializeField] protected GameObject arrowObject;
-    protected Dir8 jumpDirection;
-    protected Vector2 jumpVector;
+    protected Dir8 dashDirection;
+    protected Vector2 dashVector;
     protected bool bSelected;
+    protected bool bCharging;
     [SerializeField] protected GameObject targetPoint;
 
     [Header("Miscellaneous")]
@@ -43,6 +47,8 @@ public class Entity : MonoBehaviour
         sr = GetComponentInChildren<SpriteRenderer>();
         col = GetComponentInChildren<Collider2D>();
         outline = outlineObject.gameObject.GetComponent<OutLine>();
+        fsm = new StateMachine();
+
         arrowObject.gameObject.SetActive(false);
     }
 
@@ -64,12 +70,6 @@ public class Entity : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (bSelected)
-        {
-            outline.SetCurrentSprite(sr.sprite);
-            CalcJumpDirection();
-        }
-
         ProcessNextCommand();
     }
 
@@ -123,10 +123,6 @@ public class Entity : MonoBehaviour
         }
 
         outline.ShowOutLine(sr.sprite);
-
-        //test code
-        if (bTest)
-            animator.SetInteger("UnitState", (int)UnitState.CombatStart);
     }
 
     public void HideOutLine()
@@ -134,10 +130,6 @@ public class Entity : MonoBehaviour
         outline.HideOutLine();
         arrowObject.gameObject.SetActive(false);
         targetPoint.gameObject.SetActive(false);
-
-        //test code
-        if (bTest)
-            animator.SetInteger("UnitState", (int)UnitState.DashStart);
     }
 
     protected Vector2 CalcMousePos()
@@ -149,7 +141,7 @@ public class Entity : MonoBehaviour
         return worldPos;
     }
 
-    protected void CalcJumpDirection()
+    public void CalcDashDirection()
     {
         Vector2 mousePos = CalcMousePos();
         Vector2 curPos = new Vector2(transform.position.x, transform.position.y);
@@ -166,10 +158,18 @@ public class Entity : MonoBehaviour
         // 8방향은 45° 단위 → 360/8 = 45
         int index = Mathf.RoundToInt(angle / 45f) % 8;
 
-        jumpDirection = (Dir8)index;
-        jumpVector = dir.normalized;
+        dashDirection = (Dir8)index;
+        dashVector = dir.normalized;
 
-        animator.SetFloat("FacingDir", (float)jumpDirection);
+        if (((int)dashDirection >= 0 && (int)dashDirection <= 2) ||
+                   ((int)dashDirection >= 6 && (int)dashDirection <= 7))
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+        else
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
     }
 
     protected void CalcKnockBackDirection(Vector2 attackPos)
@@ -186,29 +186,35 @@ public class Entity : MonoBehaviour
 
         int index = Mathf.RoundToInt(angle / 45f) % 8;
 
-        jumpDirection = (Dir8)index;
-        jumpVector = dir.normalized;
-
-        animator.SetFloat("FacingDir", (float)jumpDirection);
+        dashDirection = (Dir8)index;
+        dashVector = dir.normalized;
     }
 
     public void SetSelected(bool _bSelected)
     {
         bSelected = _bSelected;
-        HideOutLine();
+
+        if (bSelected)
+        {
+            fsm.ChangeState<SelectedState>();
+        }
+        else
+        {
+            fsm.ChangeState<IdleState>();
+        }
     }
 
     public Dir8 GetFacingDir()
     {
-        return jumpDirection;
+        return dashDirection;
     }
 
-    public virtual void Jump()
+    public virtual void Dash()
     {
 
     }
 
-    public virtual void JumpFinished()
+    public virtual void DashFinished()
     {
 
     }
@@ -228,5 +234,40 @@ public class Entity : MonoBehaviour
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
+    }
+
+    public bool IsSelected()
+    {
+        return bSelected;
+    }
+
+    public bool IsCharging()
+    {
+        return bCharging;
+    }
+
+    public virtual void SetCharging(bool bCharging)
+    {
+        this.bCharging = bCharging;
+    }
+
+    public virtual void HandleChargingState()
+    {
+
+    }
+
+    public Vector2 GetDashVector()
+    {
+        return dashVector;
+    }
+
+    public void UpdateOutlineSprite()
+    {
+        outline.SetCurrentSprite(sr.sprite);
+    }
+
+    public virtual void Attack()
+    {
+
     }
 }

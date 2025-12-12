@@ -8,6 +8,7 @@ public class GameInstaller : MonoBehaviour
     private UnitSpawner unitSpawner;
     private DIServiceLocator diServiceLocator;
     private UIManager uiManager;
+    private CameraController cameraController;
 
     private void Awake()
     {
@@ -18,15 +19,17 @@ public class GameInstaller : MonoBehaviour
         uiManager = GetComponent<UIManager>();
         diServiceLocator = GetComponent<DIServiceLocator>();
 
-        if(commandInstaller == null || selectInstaller == null || inputController == null ||  unitSpawner == null ||
-            diServiceLocator == null || uiManager == null)
+        cameraController = FindFirstObjectByType<CameraController>();
+
+        if (commandInstaller == null || selectInstaller == null || inputController == null ||  unitSpawner == null ||
+            diServiceLocator == null || uiManager == null || cameraController == null)
         {
             Debug.Log("Something is null -> GameInstaller::Awake");
             return;
         }
 
         inputController.Initialize(diServiceLocator);
-        selectInstaller.Initialize(inputController.inputReader);
+        selectInstaller.Initialize(inputController.inputReader,cameraController);
         commandInstaller.Initialize(inputController.inputReader,selectInstaller.selectManager);
         unitSpawner.Initiallize(inputController.inputReader, commandInstaller.GetCommandController());
 

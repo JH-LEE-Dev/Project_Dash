@@ -126,9 +126,9 @@ GameObject:
   - component: {fileID: 5184990208181836280}
   - component: {fileID: 529964238453914299}
   - component: {fileID: 2407507716967637775}
-  - component: {fileID: 443764825222054621}
   - component: {fileID: 851668567189430306}
-  - component: {fileID: 8058358983438129025}
+  - component: {fileID: 5112387382779021223}
+  - component: {fileID: 4057113612996553976}
   m_Layer: 6
   m_Name: TestUnit
   m_TagString: Untagged
@@ -246,22 +246,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutLine
   color: {r: 0, g: 0, b: 0, a: 0}
---- !u!114 &443764825222054621
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2531528932588792740}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20ec2a4f9c57ba84fabac24035448d82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Unit
-  bTest: 1
-  arrowObject: {fileID: 6966817255305563254}
-  targetPoint: {fileID: 2934932891776544324}
-  outlineObject: {fileID: 8894903859216210011}
 --- !u!114 &851668567189430306
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,10 +258,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 553ed9ce5d450914f9a77f1d3e99a65a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PEffectComponent
-  jumpEffectObject: {fileID: 3118215993721501697}
+  dashEffectObject: {fileID: 3118215993721501697}
   knockBackEffectObject: {fileID: 7648750721824892695}
   shadowObject: {fileID: 7502798636687384884}
---- !u!114 &8058358983438129025
+--- !u!114 &5112387382779021223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2531528932588792740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cfb8c82bdfc2954683d6f0dc9018c16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Swordmand
+  bTest: 1
+  arrowObject: {fileID: 6966817255305563254}
+  targetPoint: {fileID: 2934932891776544324}
+  outlineObject: {fileID: 8894903859216210011}
+  conflictKnockBackPower: 2
+--- !u!114 &4057113612996553976
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -292,6 +293,7 @@ MonoBehaviour:
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 128
+  attackStrategy: {fileID: 11400000, guid: 1476b3d14bf32c046af92d6a945531f4, type: 2}
 --- !u!1 &2934932891776544324
 GameObject:
   m_ObjectHideFlags: 0
@@ -393,7 +395,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1594026608690302345}
   m_Layer: 6
-  m_Name: JumpEffect
+  m_Name: DashEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -894,7 +896,7 @@ Transform:
   m_GameObject: {fileID: 7989288278803819157}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.41, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -969,12 +971,12 @@ SpriteRenderer:
   m_SortingLayerID: 1888722717
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 4710867793936737462, guid: 412bdeaefd0a54a409456e66a56cf8d1, type: 3}
+  m_Sprite: {fileID: -3425257872766868883, guid: d1774f416a9855347aa6dbba8afd8352, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 3, y: 3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1019,7 +1021,7 @@ Transform:
   m_GameObject: {fileID: 8894903859216210011}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.40999997, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

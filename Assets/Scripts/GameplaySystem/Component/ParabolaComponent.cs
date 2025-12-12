@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ParabolaComponent
 {
-    public event Action JumpFinishEvent;
+    public event Action DashFinishedEvent;
 
     public Vector2 start;
     public Vector2 end;
@@ -43,7 +43,7 @@ public class ParabolaComponent
         { 
             t = 1f;
             bJumpFinished = true;
-            JumpFinishEvent.Invoke();
+            DashFinishedEvent.Invoke();
         }
 
         CurrentPos = GetParabolaPos(start, end, height, t);
